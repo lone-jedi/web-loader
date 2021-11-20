@@ -5,6 +5,7 @@ import com.yarkin.server.response.ResponseWritter;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 
 public class RequestHandler {
     private BufferedReader reader;
@@ -17,22 +18,23 @@ public class RequestHandler {
         this.webAppPath = webAppPath;
     }
 
-    public void handle() {
+    public void handle() throws IOException {
         String response = "";
         RequestParser requestParser = new RequestParser(reader);
         ResponseWritter responseWritter = new ResponseWritter(writer);
 
-        if(!requestParser.isHttp()) {
+        String requestText = requestParser.getRequestText();
+        if(!requestParser.isHttp(requestText)) {
             response = responseWritter.getBadRequestResponse("Bad HTTP Request");
             responseWritter.write(response);
             return;
         }
 
-        String uri = requestParser.parseUrl();
+        String uri = requestParser.parseUrl(requestText);
 
         ResourceReader resourceReader = new ResourceReader(webAppPath, uri);
         if(!resourceReader.resourceExists()) {
-            response = responseWritter.getNotFoundtResponse("404 Not Found");
+            response = responseWritter.getNotFoundResponse("404 Not Found");
             responseWritter.write(response);
             return;
         }
