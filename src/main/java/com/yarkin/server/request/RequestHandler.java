@@ -1,5 +1,8 @@
 package com.yarkin.server.request;
 
+import com.yarkin.server.resource.ResourceReader;
+import com.yarkin.server.response.ResponseWritter;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 
@@ -8,19 +11,34 @@ public class RequestHandler {
     private BufferedWriter writer;
     private String webAppPath;
 
-    public void setReader(BufferedReader reader) {
+    public RequestHandler(BufferedReader reader, BufferedWriter writer, String webAppPath) {
         this.reader = reader;
-    }
-
-    public void setWriter(BufferedWriter writer) {
         this.writer = writer;
-    }
-
-    public void setWebAppPath(String webAppPath) {
         this.webAppPath = webAppPath;
     }
 
     public void handle() {
-        // processing...
+        String response = "";
+        RequestParser requestParser = new RequestParser(reader);
+        ResponseWritter responseWritter = new ResponseWritter(writer);
+
+        if(!requestParser.isHttp()) {
+            response = responseWritter.getBadRequestResponse("Bad HTTP Request");
+            responseWritter.write(response);
+            return;
+        }
+
+        String uri = requestParser.parseUrl();
+
+        ResourceReader resourceReader = new ResourceReader(webAppPath, uri);
+        if(!resourceReader.resourceExists()) {
+            response = responseWritter.getNotFoundtResponse("404 Not Found");
+            responseWritter.write(response);
+            return;
+        }
+
+        String content = resourceReader.readResource(uri);
+        response = responseWritter.getSuccessResponse(content);
+        responseWritter.write(response);
     }
 }
