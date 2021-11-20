@@ -21,7 +21,6 @@ public class Server {
                      BufferedWriter writer = new BufferedWriter(
                              new OutputStreamWriter(socket.getOutputStream())
                      );) {
-                    // server code here...
                     RequestHandler requestHandler = new RequestHandler();
                     requestHandler.setReader(reader);
                     requestHandler.setWriter(writer);
@@ -50,6 +49,9 @@ public class Server {
     }
 
     public void setWebAppPath(String webAppPath) {
+        if(!new File(webAppPath).exists()) {
+            throw new IllegalArgumentException("Directory \"" + webAppPath + "\" does not exist");
+        }
         this.webAppPath = webAppPath;
     }
 }
