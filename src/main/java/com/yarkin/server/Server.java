@@ -21,11 +21,7 @@ public class Server {
                      BufferedWriter writer = new BufferedWriter(
                              new OutputStreamWriter(socket.getOutputStream())
                      );) {
-                    RequestHandler requestHandler = new RequestHandler();
-                    requestHandler.setReader(reader);
-                    requestHandler.setWriter(writer);
-                    requestHandler.setWebAppPath(webAppPath);
-
+                    RequestHandler requestHandler = new RequestHandler(reader, writer, webAppPath);
                     requestHandler.handle();
                 }
             }
