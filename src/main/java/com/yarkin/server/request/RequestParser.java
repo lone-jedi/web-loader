@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class RequestParser {
     private static final Pattern httpFirstLinePattern =
-            Pattern.compile("^\\w{3,6}\\s/[a-zA-Z0-9-?=&\\./]*\\sHTTP/((1\\.1)|2)\\n");
+            Pattern.compile("^\\w{3,6}\\s/[a-zA-Z0-9-?=&\\./]*\\sHTTP/((1\\.1)|2)(\\n|(\\r\\n))");
     private static final Pattern httpUrlPattern = Pattern.compile("/[\\w\\d\\./\\-?&=]*");
 
     private BufferedReader reader;
@@ -59,7 +59,9 @@ public class RequestParser {
         return parseUrl(requestText).split("\\?")[0];
     }
 
-    public String getRequestText() {
-        return null;
+    public String getRequestText() throws IOException {
+        char[] charS = new char[32 * 1024]; // 32KB
+        int bytesCount = reader.read(charS);
+        return new String(charS, 0, bytesCount);
     }
 }
