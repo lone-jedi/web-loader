@@ -13,7 +13,7 @@ public class ServerTest {
 
     @BeforeAll
     static void initialize() {
-        new File("src/main/test/resources/web-app").mkdirs();
+        new File("src/test/resources/web-app").mkdirs();
     }
 
     @BeforeEach
@@ -48,20 +48,20 @@ public class ServerTest {
 
     @Test
     public void setExistsWebAppPath() {
-        assertDoesNotThrow(() -> server.setWebAppPath("src/main/test/resources/web-app"));
-        assertDoesNotThrow(() -> server.setWebAppPath("src/main/test/resources/web-app/"));
-        assertDoesNotThrow(() -> server.setWebAppPath("src/main/test/resources///web-app//"));
+        assertDoesNotThrow(() -> server.setWebAppPath("src/test/resources/web-app"));
+        assertDoesNotThrow(() -> server.setWebAppPath("src/test/resources/web-app/"));
+        assertDoesNotThrow(() -> server.setWebAppPath("src/test/resources///web-app//"));
     }
 
     @Test
     public void setNotExistsWebAppPath() {
         assertThrows(IllegalArgumentException.class, () -> {
-            server.setWebAppPath("src/main/test/resources/some-folder");
-        }, "Directory \"src/main/test/resources/some-folder\" does not exist");
+            server.setWebAppPath("src/test/resources/some-folder");
+        }, "Directory \"src/test/resources/some-folder\" does not exist");
 
         assertThrows(IllegalArgumentException.class, () -> {
-            server.setWebAppPath("src/main/test/resources/web-app/some-folder");
-        }, "Directory \"src/main/test/resources/web-app/some-folder\" does not exist");
+            server.setWebAppPath("src/test/resources/web-app/some-folder");
+        }, "Directory \"src/test/resources/web-app/some-folder\" does not exist");
 
     }
 }
